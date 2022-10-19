@@ -1,0 +1,1 @@
+diff-ignore=po/POTFILES.in|3rdparty/micro-ecc/Makefile.in|3rdparty/Makefile|3rdparty/Makefile.in|3rdparty/miniupnp/miniupnpc/miniupnpcstrings.h|po/.*po$|po/warzone2100.pot

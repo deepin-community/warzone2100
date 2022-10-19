@@ -1,0 +1,18 @@
+From: Russell Coker
+
+Force the search path for datadir to include /usr/share/games/warzone2100/
+because I can't figure out how to do it via CMake
+
+Index: warzone2100-4.2.7/src/main.cpp
+===================================================================
+--- warzone2100-4.2.7.orig/src/main.cpp
++++ warzone2100-4.2.7/src/main.cpp
+@@ -756,6 +756,8 @@ static void scanDataDirs()
+ 	// version-independent location for video files
+ 	registerSearchPath("/Library/Application Support/Warzone 2100/", 1);
+ #endif
++	// this is not the right solution.
++	registerSearchPath("/usr/share/games/warzone2100/", 1);
+ 
+ #if !defined(WZ_OS_MAC)
+ 	// Check PREFIX-based paths

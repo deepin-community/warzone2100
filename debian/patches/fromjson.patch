@@ -1,0 +1,32 @@
+From: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Date: Tue, 6 Oct 2020 21:25:16 +0200
+Subject: fromjson
+
+===================================================================
+---
+ po/Makefile.in.in | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/po/Makefile.in.in b/po/Makefile.in.in
+index 01768e8..d40729d 100644
+--- a/po/Makefile.in.in
++++ b/po/Makefile.in.in
+@@ -75,6 +75,9 @@ DISTFILES = $(DISTFILES.common) Makevars POTFILES.in update-po.sh parseJson.py \
+ $(POFILES) $(GMOFILES) \
+ $(DISTFILES.extra1) $(DISTFILES.extra2) $(DISTFILES.extra3)
+ 
++../po/custom/fromJson.txt:
++	./update-po.sh
++
+ POTFILES = \
+ 
+ CATALOGS = @CATALOGS@
+@@ -334,7 +337,7 @@ info dvi ps pdf html tags TAGS ctags CTAGS ID:
+ mostlyclean:
+ 	rm -f remove-potcdate.sed
+ 	rm -f stamp-poT
+-	rm -f core core.* $(DOMAIN).po $(DOMAIN).1po $(DOMAIN).2po *.new.po
++	rm -f core core.* $(DOMAIN).po $(DOMAIN).1po $(DOMAIN).2po *.new.po *.gmo
+ 	rm -fr *.o
+ 
+ clean: mostlyclean

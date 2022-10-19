@@ -1,0 +1,6 @@
+use-system-libraries.patch
+fix-yacc.patch
+redefinition-FTBFS.patch
+fromjson.patch
+wkhtmltopdf.patch
+datadir.patch

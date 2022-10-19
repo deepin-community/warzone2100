@@ -1,0 +1,16 @@
+FROM arm64v8/ubuntu:18.04
+
+RUN cat /etc/lsb-release
+
+RUN mkdir -p /scripts
+COPY get-dependencies_linux.sh /scripts
+RUN chmod +x /scripts/get-dependencies_linux.sh
+
+RUN apt-get -u update \
+ && DEBIAN_FRONTEND=noninteractive apt-get -y install gcc g++ clang libc-dev dpkg-dev ninja-build pkg-config \
+ && /scripts/get-dependencies_linux.sh ubuntu build-dependencies \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /code
+CMD ["sh"]
+

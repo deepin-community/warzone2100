@@ -1,0 +1,84 @@
+From: Clint Adams <clint@debian.org>
+Date: Sun, 1 May 2016 14:46:49 +0200
+Subject: fix yacc
+
+Forwarded: no
+---
+ lib/framework/resource_parser.ypp |  2 +-
+ lib/framework/strres_lexer.lpp    |  2 +-
+ lib/framework/strres_parser.ypp   | 13 ++++++-------
+ lib/framework/strresly.h          |  4 ++--
+ lib/gamelib/audp_parser.ypp       |  2 +-
+ lib/script/chat_parser.ypp        |  2 +-
+ lib/script/script_parser.ypp      |  2 +-
+ src/scriptvals_parser.ypp         |  2 +-
+ 8 files changed, 14 insertions(+), 15 deletions(-)
+
+Index: warzone2100-4.2.1/lib/framework/resource_parser.ypp
+===================================================================
+--- warzone2100-4.2.1.orig/lib/framework/resource_parser.ypp
++++ warzone2100-4.2.1/lib/framework/resource_parser.ypp
+@@ -48,7 +48,7 @@ void yyerror(const char* msg)
+ 
+ %}
+ 
+-%name-prefix="res_"
++%name-prefix "res_"
+ 
+ %union {
+ 	char  *sval;
+Index: warzone2100-4.2.1/lib/framework/strres_parser.ypp
+===================================================================
+--- warzone2100-4.2.1.orig/lib/framework/strres_parser.ypp
++++ warzone2100-4.2.1/lib/framework/strres_parser.ypp
+@@ -32,19 +32,18 @@ extern int strres_lex(void);
+ extern int strres_get_lineno(void);
+ extern char* strres_get_text(void);
+ 
+-void yyerror(const char* msg)
+-{
+-	debug(LOG_ERROR, "STRRES file parse error:\n%s at line %d\nText: '%s'", msg, strres_get_lineno(), strres_get_text());
+-}
+-
+ // Forward declaration to allow pointers to this type
+ struct STR_RES;
+ 
+-#define YYPARSE_PARAM psStrRes
++void yyerror(struct STR_RES *p, const char* msg)
++{
++	debug(LOG_ERROR, "STRRES file parse error:\n%s at line %d\nText: '%s'", msg, strres_get_lineno(), strres_get_text());
++}
+ 
+ %}
+ 
+-%name-prefix="strres_"
++%parse-param {struct STR_RES *psStrRes}
++%name-prefix "strres_"
+ 
+ %union {
+ 	char  *sval;
+Index: warzone2100-4.2.1/lib/gamelib/audp_parser.ypp
+===================================================================
+--- warzone2100-4.2.1.orig/lib/gamelib/audp_parser.ypp
++++ warzone2100-4.2.1/lib/gamelib/audp_parser.ypp
+@@ -35,7 +35,7 @@ void yyerror(const char* fmt);
+ 
+ %}
+ 
+-%name-prefix="audp_"
++%name-prefix "audp_"
+ 
+ %union {
+ 	float		fval;
+Index: warzone2100-4.2.1/lib/framework/strres_lexer.cpp
+===================================================================
+--- warzone2100-4.2.1.orig/lib/framework/strres_lexer.cpp
++++ warzone2100-4.2.1/lib/framework/strres_lexer.cpp
+@@ -604,7 +604,6 @@ static inline bool no_warn_unused_result
+ # define strres_set_extra  strres_set_extra
+ # define strres_get_lineno strres_get_lineno
+ # define strres_get_text   strres_get_text
+-extern void strres_set_extra(YY_EXTRA_TYPE user_defined);
+ extern YY_EXTRA_TYPE strres_get_extra(void);
+ extern int strres_get_lineno(void);
+ int strres_get_lineno()

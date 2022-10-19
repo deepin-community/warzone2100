@@ -1,0 +1,22 @@
+From: Markus Koschany <apo@debian.org>
+Date: Tue, 6 Oct 2020 21:15:51 +0200
+Subject: wkhtmltopdf
+
+Grant wkhtmltopdf access to local files in order to prevent a FTBFS.
+Debian-Bug: https://bugs.debian.org/971194
+Forwarded: no
+---
+
+Index: warzone2100-4.2.1/doc/CMakeLists.txt
+===================================================================
+--- warzone2100-4.2.1.orig/doc/CMakeLists.txt
++++ warzone2100-4.2.1/doc/CMakeLists.txt
+@@ -203,7 +203,7 @@ elseif(A2X_FOUND)
+ 
+ 		add_custom_command(
+ 			TARGET wz2100_doc
+-			COMMAND "wkhtmltopdf"
++			COMMAND wkhtmltopdf --enable-local-file-access
+ 			ARGS
+ 				"${CMAKE_CURRENT_SOURCE_DIR}/quickstartguide.htm"
+ 				"${CMAKE_CURRENT_BINARY_DIR}/quickstartguide.pdf"

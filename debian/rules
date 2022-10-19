@@ -1,0 +1,48 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE=1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CPPFLAGS_MAINT_APPEND = -DNDEBUG
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# Remove embedded code copies so we never use them
+	rm -rf 3rdparty/miniupnpc
+	# Remove generated files so we regenerate them
+	rm -f doc/warzone2100.6
+	rm -rf debian/build
+	mkdir debian/build
+	cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -GNinja -S . -B debian/build
+
+override_dh_auto_build:
+	(cd po ; ./update-po.sh ; cp -r custom ../debian/build/po )
+	cmake --build debian/build
+	# The HTML to PDF converter needs an X server
+	# The default bit depth is too low for the images in the PDF
+	xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" dh_auto_build
+	icotool -x icons/warzone2100.ico
+	rm -f warzone2100_*_*x*x*.png
+
+override_dh_auto_install:
+	cmake --install debian/build --prefix debian/tmp/usr
+	mkdir debian/tmp/usr/share/games
+	mv debian/tmp/usr/share/warzone2100 debian/tmp/usr/share/games/warzone2100
+	mkdir -p debian/tmp/usr/games
+	mv debian/tmp/usr/bin/warzone2100 debian/tmp/usr/games
+	rm -rf debian/tmp/usr/bin
+	mv debian/tmp/usr/share/metainfo debian/tmp/usr/share/appdata
+	rm -f debian/*/usr/share/doc/warzone2100/COPYING*
+	rm -f debian/*/usr/share/doc/warzone2100/ChangeLog*
+	rm -f debian/*/usr/share/doc/warzone2100/Readme*
+	rm -f debian/tmp/usr/share/doc/warzone2100/copyright
+
+override_dh_compress:
+	dh_compress -X.pdf
+
+override_dh_auto_test:
+	# Do nothing here at the moment to work around a FTBFS
+
+override_dh_clean:
+	rm -rf debian/build po/custom/fromJson.txt debian/warzone2100 debian/warzone2100-data debian/tmp debian/warzone2100-music debian/.debhelper

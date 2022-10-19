@@ -1,0 +1,9 @@
+If you want to rebuild the quickstartguide.pdf file from source, you need to
+add
+
+    wkhtmltopdf
+
+to Build-Depends in debian/control. This works on all supported architectures
+except mipsel where the program segfaults. In order to prevent a FTBFS and a
+release critical bug this manual method is required as long as wkhtmltopdf is
+buggy on mipsel.
